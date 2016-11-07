@@ -547,6 +547,19 @@ public abstract class RealmBasedRecyclerViewAdapter
                             notifyDataSetChanged();
                         }
                     } else {
+
+                        ArrayList<Delta> sortedDeltas = new ArrayList<>(deltas);
+                        Collections.sort(sortedDeltas, new Comparator<Delta>() {
+                            @Override
+                            public int compare(Delta delta, Delta t1) {
+                                if (delta.getType() == t1.getType()) {
+                                    return 0;
+                                } else if (delta.getType() == Delta.TYPE.DELETE && t1.getType() == Delta.TYPE.INSERT) {
+                                    return -1;
+                                } else return 1;
+                            }
+                        });
+
                         for (Delta delta : deltas) {
                             if (delta.getType() == Delta.TYPE.INSERT) {
                                 notifyItemRangeInserted(
